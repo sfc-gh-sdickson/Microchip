@@ -321,9 +321,114 @@ GRANT USAGE ON CORTEX SEARCH SERVICE MICROCHIP_INTELLIGENCE.RAW.QUALITY_INVESTIG
 
 ---
 
-## Step 4: Test the Agent
+## Step 4: Add Chart Generation Tool (Optional but Recommended)
 
-### Step 4.1: Test Structured Data Queries (Cortex Analyst)
+This step adds a Streamlit-based chart generation capability so users can request visualizations like "show me this data in a 3D pie chart" - all running within Snowflake.
+
+### Step 4.1: Create Chart Generation Functions
+
+1. Execute the chart function SQL:
+```sql
+-- Execute: sql/tools/07_create_chart_function.sql
+-- Creates Python UDFs for chart generation
+-- Execution time: < 5 seconds
+```
+
+### Step 4.2: Deploy Streamlit Chart App in Snowflake
+
+1. In Snowsight, navigate to **Streamlit** in the left sidebar
+2. Click **+ Streamlit App**
+3. Configure the app:
+   - **App name**: `MICROCHIP_CHART_GENERATOR`
+   - **Warehouse**: Select `MICROCHIP_WH`
+   - **App location**: 
+     - Database: `MICROCHIP_INTELLIGENCE`
+     - Schema: `ANALYTICS`
+4. Click **Create**
+5. Replace the default code with the contents of `streamlit/chart_app.py`
+6. Click **Run** to test the app
+7. Verify the app loads and shows the chart configuration interface
+
+### Step 4.3: Add Chart Tool to Agent
+
+1. Go back to your Intelligence Agent (`MICROCHIP_INTELLIGENCE_AGENT`)
+2. Click **Tools** in the left pane
+3. Find **Streamlit** and click **+ Add**
+
+**Configure Streamlit Chart Tool:**
+
+1. **Select Streamlit app**: `MICROCHIP_INTELLIGENCE.ANALYTICS.MICROCHIP_CHART_GENERATOR`
+2. **Add a description**:
+   ```
+   Use this tool to create interactive visualizations and charts from query results. 
+   Supports multiple chart types including:
+   - Bar charts, pie charts, 3D pie charts
+   - Line charts, area charts
+   - Scatter plots, 3D scatter plots
+   - Histograms, box plots, heatmaps
+   
+   When a user requests a visualization, use this tool to:
+   1. Pass the data query to the Streamlit app
+   2. Specify the chart type requested (e.g., "3d pie chart", "bar chart")
+   3. Configure axes based on the data columns
+   
+   The app will generate an interactive chart that users can explore.
+   Examples:
+   - "Show me design wins by product family in a pie chart"
+   - "Create a 3D scatter plot of product specifications"
+   - "Display revenue trends as a line chart"
+   ```
+3. **Save**
+
+### Step 4.4: Grant Permissions for Chart Functions
+
+```sql
+USE ROLE ACCOUNTADMIN;
+
+-- Grant execute permissions on chart functions
+GRANT USAGE ON FUNCTION MICROCHIP_INTELLIGENCE.ANALYTICS.GENERATE_CHART_SPEC(VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO ROLE <your_role>;
+GRANT USAGE ON PROCEDURE MICROCHIP_INTELLIGENCE.ANALYTICS.CREATE_AGENT_CHART(VARIANT, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO ROLE <your_role>;
+
+-- Grant usage on Streamlit app
+GRANT USAGE ON STREAMLIT MICROCHIP_INTELLIGENCE.ANALYTICS.MICROCHIP_CHART_GENERATOR TO ROLE <your_role>;
+```
+
+### Step 4.5: Test Chart Generation
+
+Test the chart tool with these prompts:
+
+1. **Simple pie chart**:
+   ```
+   Show me design wins by product family in a pie chart
+   ```
+
+2. **3D pie chart**:
+   ```
+   Create a 3D pie chart of revenue by customer segment
+   ```
+
+3. **Bar chart with comparison**:
+   ```
+   Display distributor performance as a bar chart showing revenue by distributor
+   ```
+
+4. **Line chart for trends**:
+   ```
+   Show me monthly order trends in a line chart for the past 12 months
+   ```
+
+5. **3D scatter plot**:
+   ```
+   Create a 3D scatter plot showing product price, flash size, and RAM size
+   ```
+
+The agent should recognize the chart request, query the appropriate data using semantic views, and pass it to the Streamlit app for visualization.
+
+---
+
+## Step 5: Test the Agent
+
+### Step 5.1: Test Structured Data Queries (Cortex Analyst)
 
 1. In the agent interface, click **Chat**
 2. Try these test questions:
@@ -358,7 +463,7 @@ What is the average support ticket resolution time by ticket category?
 ```
 Expected: Uses SV_CUSTOMER_SUPPORT_INTELLIGENCE, calculates averages by ticket_category
 
-### Step 4.2: Test Unstructured Data Queries (Cortex Search)
+### Step 5.2: Test Unstructured Data Queries (Cortex Search)
 
 **Test 6: Technical Support Search**
 ```
@@ -390,7 +495,7 @@ What guidance do our application notes provide about motor control FOC implement
 ```
 Expected: Uses APPLICATION_NOTES_SEARCH, retrieves motor control procedures
 
-### Step 4.3: Test Combined Queries (Structured + Unstructured)
+### Step 5.3: Test Combined Queries (Structured + Unstructured)
 
 **Test 11: Product Quality + Support Analysis**
 ```
@@ -406,11 +511,39 @@ implementation guidance.
 ```
 Expected: Uses SV_DESIGN_ENGINEERING_INTELLIGENCE and APPLICATION_NOTES_SEARCH
 
+### Step 5.4: Test Chart Generation (If Added)
+
+If you added the chart generation tool in Step 4:
+
+**Test 1: Simple Pie Chart**
+```
+Show me the top 10 products by design wins in a pie chart
+```
+Expected: Agent queries design wins data, passes to Streamlit app, generates pie chart
+
+**Test 2: 3D Pie Chart**
+```
+Create a 3D pie chart of revenue by customer segment
+```
+Expected: Agent queries revenue data, generates 3D pie visualization
+
+**Test 3: Bar Chart**
+```
+Display distributor performance as a bar chart
+```
+Expected: Agent shows comparative bar chart of distributor metrics
+
+**Test 4: Scatter Plot**
+```
+Show me a scatter plot of product price versus flash memory size
+```
+Expected: Agent creates scatter plot showing price/memory correlation
+
 ---
 
-## Step 5: Advanced Configuration (Optional)
+## Step 6: Advanced Configuration (Optional)
 
-### 5.1: Add Guardrails
+### 6.1: Add Guardrails
 
 In the **Instructions** section, you can add specific guardrails:
 ```
@@ -419,7 +552,7 @@ Always cite data sources (semantic view or Cortex Search service used).
 For quality issues, maintain customer confidentiality.
 ```
 
-### 5.2: Configure Response Formatting
+### 6.2: Configure Response Formatting
 
 Add formatting preferences to the instructions:
 ```
