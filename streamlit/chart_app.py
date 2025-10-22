@@ -3,6 +3,7 @@
 # ============================================================================
 # Purpose: Streamlit app that generates charts from agent queries
 # Runs entirely within Snowflake - no external dependencies
+# Supports agent invocation with parameters
 # ============================================================================
 
 import streamlit as st
@@ -10,9 +11,13 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from snowflake.snowpark.context import get_active_session
+import json
 
 # Get Snowflake session
 session = get_active_session()
+
+# Check if invoked by agent with parameters
+agent_params = st.experimental_get_query_params()
 
 st.set_page_config(
     page_title="Microchip Intelligence Charts",
@@ -20,8 +25,97 @@ st.set_page_config(
     layout="wide"
 )
 
-st.title("📊 Microchip Intelligence Agent - Chart Generator")
-st.markdown("Generate interactive charts from your data queries")
+# Check if agent invoked with data
+agent_mode = False
+agent_data = None
+agent_chart_type = None
+
+if 'data' in agent_params and 'chart_type' in agent_params:
+    agent_mode = True
+    try:
+        agent_data = json.loads(agent_params['data'][0])
+        agent_chart_type = agent_params['chart_type'][0]
+    except:
+        agent_mode = False
+
+if agent_mode and agent_data:
+    # Agent-invoked mode - show chart immediately
+    st.title(f"📊 {agent_chart_type.title()}")
+    df = pd.DataFrame(agent_data)
+    
+    # Auto-detect columns
+    cols = df.columns.tolist()
+    x_col = cols[0] if len(cols) > 0 else None
+    y_col = cols[1] if len(cols) > 1 else None
+    z_col = cols[2] if len(cols) > 2 else None
+    color_col = cols[2] if len(cols) > 2 and 'pie' not in agent_chart_type.lower() else None
+    
+    # Generate chart based on agent request
+    chart_type_lower = agent_chart_type.lower()
+    
+    if '3d' in chart_type_lower and 'pie' in chart_type_lower:
+        # 3D Pie Chart with pull effect
+        fig = go.Figure(data=[go.Pie(
+            labels=df[x_col],
+            values=df[y_col],
+            pull=[0.1] * len(df),
+            hole=0.3,
+            textposition='auto',
+            textinfo='label+percent+value',
+            marker=dict(line=dict(color='white', width=2))
+        )])
+        fig.update_layout(
+            title=f"{x_col} Distribution",
+            height=700,
+            showlegend=True,
+            scene=dict(
+                camera=dict(eye=dict(x=1.5, y=1.5, z=1.5))
+            )
+        )
+        
+    elif '3d' in chart_type_lower and 'scatter' in chart_type_lower and len(cols) >= 3:
+        # 3D Scatter Plot
+        fig = px.scatter_3d(
+            df, 
+            x=x_col, 
+            y=y_col, 
+            z=z_col,
+            color=color_col,
+            title=f"3D Scatter: {x_col} vs {y_col} vs {z_col}",
+            height=700
+        )
+        fig.update_traces(marker=dict(size=8))
+        
+    elif 'pie' in chart_type_lower:
+        fig = px.pie(df, names=x_col, values=y_col, title=f"{x_col} Distribution", height=600)
+        
+    elif 'bar' in chart_type_lower or 'column' in chart_type_lower:
+        fig = px.bar(df, x=x_col, y=y_col, color=color_col, title=f"{y_col} by {x_col}", height=600)
+        
+    elif 'line' in chart_type_lower:
+        fig = px.line(df, x=x_col, y=y_col, color=color_col, title=f"{y_col} Trend", markers=True, height=600)
+        
+    elif 'scatter' in chart_type_lower:
+        fig = px.scatter(df, x=x_col, y=y_col, color=color_col, size=y_col, title=f"{x_col} vs {y_col}", height=600)
+        
+    elif 'area' in chart_type_lower:
+        fig = px.area(df, x=x_col, y=y_col, color=color_col, title=f"{y_col} Area", height=600)
+        
+    else:
+        # Default to bar chart
+        fig = px.bar(df, x=x_col, y=y_col, title="Data Visualization", height=600)
+    
+    # Display the chart
+    st.plotly_chart(fig, use_container_width=True)
+    
+    # Show data table
+    with st.expander("📋 View Source Data"):
+        st.dataframe(df, use_container_width=True)
+        
+else:
+    # Interactive mode - manual chart creation
+    st.title("📊 Microchip Intelligence Agent - Chart Generator")
+    st.markdown("Generate interactive charts from your data queries")
 
 # Sidebar for chart configuration
 with st.sidebar:

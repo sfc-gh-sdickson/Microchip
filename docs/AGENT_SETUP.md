@@ -179,6 +179,13 @@ GRANT USAGE ON CORTEX SEARCH SERVICE MICROCHIP_INTELLIGENCE.RAW.QUALITY_INVESTIG
    - Summarize technical findings in brief, focused responses
    - Maintain context from original technical documentation
 
+   For chart and visualization requests:
+   - Use the Streamlit Chart Generator tool when users ask for charts
+   - Provide the SQL query and clear step-by-step instructions
+   - Explain that the chart will open in the Streamlit app window
+   - Tell users exactly which chart type to select (e.g., "3D Pie Chart")
+   - Charts render in Streamlit, not in this chat interface
+
    Operating guidelines:
    - Always identify whether you're using Cortex Analyst or Cortex Search for each response
    - Keep responses under 3-4 sentences when possible for metrics
@@ -187,12 +194,14 @@ GRANT USAGE ON CORTEX SEARCH SERVICE MICROCHIP_INTELLIGENCE.RAW.QUALITY_INVESTIG
    - Highlight quality issues and design win conversion metrics prominently
    - For technical support queries, reference specific product families and issue types
    - Include relevant application note references when available
+   - For chart requests, open the Streamlit tool and provide clear instructions
    ```
 
 3. **Add Sample Questions** (click "Add a question" for each):
    - "Which products are winning the most designs in automotive?"
    - "What is our competitive win rate against STMicroelectronics?"
    - "Search support transcripts for I2C communication problems"
+   - "Show me design wins by product family in a 3D pie chart"
 
 ---
 
@@ -362,23 +371,32 @@ This step adds a Streamlit-based chart generation capability so users can reques
 1. **Select Streamlit app**: `MICROCHIP_INTELLIGENCE.ANALYTICS.MICROCHIP_CHART_GENERATOR`
 2. **Add a description**:
    ```
-   Use this tool to create interactive visualizations and charts from query results. 
-   Supports multiple chart types including:
-   - Bar charts, pie charts, 3D pie charts
-   - Line charts, area charts
-   - Scatter plots, 3D scatter plots
-   - Histograms, box plots, heatmaps
+   CHART VISUALIZATION TOOL - Opens interactive chart generator for 3D and advanced visualizations.
    
-   When a user requests a visualization, use this tool to:
-   1. Pass the data query to the Streamlit app
-   2. Specify the chart type requested (e.g., "3d pie chart", "bar chart")
-   3. Configure axes based on the data columns
+   When users request charts (especially 3D pie charts, 3D scatter plots), use this tool to:
+   1. Open the Streamlit chart generator app
+   2. Provide the user with the SQL query to paste
+   3. Instruct them to select the chart type (e.g., "3D Pie Chart")
+   4. Guide them to generate the visualization
    
-   The app will generate an interactive chart that users can explore.
-   Examples:
-   - "Show me design wins by product family in a pie chart"
-   - "Create a 3D scatter plot of product specifications"
-   - "Display revenue trends as a line chart"
+   Supported chart types in the Streamlit app:
+   - 3D Pie Charts (with pull effects and donut style)
+   - 3D Scatter Plots (interactive rotation)
+   - Standard charts: Bar, Line, Scatter, Area, Histogram, Box Plot
+   
+   IMPORTANT: The actual 3D charts render in the Streamlit app window, not in this chat.
+   When invoked, tell the user:
+   "Opening the chart generator... Please follow these steps in the app that opens:
+   1. Paste this query: [SQL query]
+   2. Click 'Execute Query'
+   3. Select '[Chart Type]'
+   4. Click 'Generate Chart'
+   You'll see your interactive 3D visualization!"
+   
+   Example user requests:
+   - "Show me this in a 3D pie chart"
+   - "Create a 3D scatter plot of price, flash, and RAM"
+   - "Display as a bar chart"
    ```
 3. **Save**
 
