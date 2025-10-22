@@ -1,3 +1,5 @@
+<img src="..\Snowflake_Logo.svg" width="200">
+
 # Microchip Intelligence Agent - Setup Guide
 
 This guide walks through configuring a Snowflake Intelligence agent for Microchip's semiconductor business intelligence solution covering design wins, sales revenue, product performance, customer support, and quality analytics.

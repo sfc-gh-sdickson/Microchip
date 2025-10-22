@@ -1,3 +1,5 @@
+<img src="..\Snowflake_Logo.svg" width="200">
+
 # Microchip Intelligence Agent - Complex Questions
 
 These 20 complex questions demonstrate the intelligence agent's ability to analyze Microchip's design wins, product performance, sales revenue, distributor effectiveness, support operations, and quality metrics across multiple dimensions.
