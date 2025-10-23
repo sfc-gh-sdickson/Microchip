@@ -495,4 +495,204 @@ SELECT PARSE_JSON(
 
 **Setup Time Estimate**: 30-45 minutes (including data generation)
 
+---
+
+## OPTIONAL: Add ML Models (Forecasting, Churn, Conversion)
+
+This section is optional but adds powerful ML prediction capabilities to your agent.
+
+### Prerequisites for ML Models
+
+- Core setup (Steps 1-3) completed
+- Files 01-06 executed successfully
+- Agent configured with semantic views and Cortex Search
+
+### ML Setup Overview
+
+1. Upload and run Snowflake Notebook to train models
+2. Execute SQL wrapper functions file
+3. Add 3 ML procedures to agent as tools
+
+**Time:** 20-30 minutes
+
+---
+
+### ML Step 1: Upload Notebook to Snowflake (5 min)
+
+1. In Snowsight, click **Projects** → **Notebooks**
+2. Click **+ Notebook** → **Import .ipynb file**
+3. Upload: `notebooks/microchip_ml_models.ipynb`
+4. Name it: `Microchip ML Models`
+5. Configure:
+   - **Database:** MICROCHIP_INTELLIGENCE
+   - **Schema:** ANALYTICS
+   - **Warehouse:** MICROCHIP_WH
+6. Click **Create**
+
+### ML Step 2: Add Required Packages
+
+1. In the notebook, click **Packages** dropdown (upper right)
+2. Search and add each package:
+   - `snowflake-ml-python`
+   - `scikit-learn`
+   - `xgboost`
+   - `matplotlib`
+3. Click **Start** to activate the notebook
+
+### ML Step 3: Run Notebook to Train Models (10 min)
+
+1. Click **Run All** (or run each cell sequentially)
+2. Wait for training to complete (2-3 minutes per model)
+3. Verify output shows:
+   - "✅ Revenue forecasting model trained"
+   - "✅ Churn classification model trained"
+   - "✅ Design win conversion model trained"
+   - "✅ Revenue model registered to Model Registry as REVENUE_PREDICTOR"
+   - "✅ Churn model registered to Model Registry as CHURN_PREDICTOR"
+   - "✅ Conversion model registered to Model Registry as CONVERSION_PREDICTOR"
+
+**Models created:**
+- REVENUE_PREDICTOR (Linear Regression for revenue forecasting)
+- CHURN_PREDICTOR (Random Forest for churn classification)
+- CONVERSION_PREDICTOR (Logistic Regression for conversion prediction)
+
+### ML Step 4: Create Wrapper Procedures (2 min)
+
+Execute the SQL wrapper functions:
+
+```sql
+@sql/ml/07_create_model_wrapper_functions.sql
+```
+
+This creates 3 stored procedures that wrap the Model Registry models so the agent can call them.
+
+**Procedures created:**
+- PREDICT_REVENUE(months_ahead)
+- PREDICT_CUSTOMER_CHURN(segment_filter)
+- PREDICT_DESIGN_WIN_CONVERSION(product_family_filter)
+
+### ML Step 5: Add ML Procedures to Agent (10 min)
+
+#### Navigate to Agent Tools
+
+1. In your agent editor (MICROCHIP_INTELLIGENCE_AGENT)
+2. Click **Tools** (left sidebar)
+
+#### Add Procedure 1: PREDICT_REVENUE
+
+1. Click **+ Add** button (top right)
+2. Click **Procedure** tile (NOT Function)
+3. In dropdown, select: `MICROCHIP_INTELLIGENCE.ANALYTICS.PREDICT_REVENUE`
+4. Paste in Description:
+   ```
+   Revenue Forecasting Procedure
+   
+   Predicts future monthly revenue using the REVENUE_PREDICTOR model from Model Registry.
+   The model uses Linear Regression trained on historical order patterns.
+   
+   Use when users ask to:
+   - Forecast revenue
+   - Predict future sales
+   - Project monthly revenue
+   - Estimate upcoming revenue
+   
+   Parameter:
+   - months_ahead: Number of months to forecast (1-12 recommended)
+   
+   Returns: JSON with predicted revenue amount
+   
+   Example: "Forecast revenue for the next 6 months"
+   ```
+5. Click **Add**
+
+#### Add Procedure 2: PREDICT_CUSTOMER_CHURN
+
+1. Click **+ Add** → **Procedure**
+2. Select: `MICROCHIP_INTELLIGENCE.ANALYTICS.PREDICT_CUSTOMER_CHURN`
+3. Description:
+   ```
+   Customer Churn Prediction Procedure
+   
+   Predicts which customers are at risk of churning using the CHURN_PREDICTOR model
+   from Model Registry. Uses Random Forest classifier trained on behavior patterns.
+   
+   Use when users ask to:
+   - Identify at-risk customers
+   - Predict customer churn
+   - Find customers likely to leave
+   - Calculate churn risk
+   
+   Parameter:
+   - customer_segment_filter: Filter by segment (OEM, CONTRACT_MANUFACTURER, DISTRIBUTOR)
+     or empty string for all customers
+   
+   Returns: JSON with churn count and churn rate percentage
+   
+   Example: "Which OEM customers are predicted to churn?"
+   ```
+4. Click **Add**
+
+#### Add Procedure 3: PREDICT_DESIGN_WIN_CONVERSION
+
+1. Click **+ Add** → **Procedure**
+2. Select: `MICROCHIP_INTELLIGENCE.ANALYTICS.PREDICT_DESIGN_WIN_CONVERSION`
+3. Description:
+   ```
+   Design Win Conversion Prediction Procedure
+   
+   Predicts which design wins are likely to convert to production using the
+   CONVERSION_PREDICTOR model from Model Registry. Uses Logistic Regression.
+   
+   Use when users ask to:
+   - Predict conversion probability
+   - Identify high-probability designs
+   - Find designs likely to go to production
+   - Prioritize design wins
+   
+   Parameter:
+   - product_family_filter: Filter by family (PIC, AVR, SAM, dsPIC, FPGA, etc.)
+     or empty string for all families
+   
+   Returns: JSON with conversion count and conversion rate percentage
+   
+   Example: "Which PIC family design wins will likely convert to production?"
+   ```
+4. Click **Add**
+
+#### Verify ML Procedures Added
+
+Your agent's **Tools** section should now show:
+- **Cortex Analyst (3):** Semantic views
+- **Cortex Search (3):** Search services
+- **Procedures (3):** ML prediction procedures
+
+**Total: 9 tools**
+
+### ML Step 6: Test ML Capabilities
+
+Ask your agent:
+
+```
+"Forecast revenue for the next 6 months"
+"Which customers are predicted to churn?"
+"Show me design wins with high conversion probability for PIC family"
+```
+
+The agent will call the appropriate ML procedures and return predictions!
+
+---
+
+## Complete Setup Summary
+
+### Core Setup (Required - 50 minutes):
+1. Execute SQL files 01-06
+2. Configure agent with semantic views and Cortex Search
+
+### ML Setup (Optional - 30 minutes):
+1. Upload and run ML notebook
+2. Execute wrapper functions SQL
+3. Add 3 procedures to agent
+
+**Total with ML: ~80 minutes**
+
 

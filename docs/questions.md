@@ -323,8 +323,80 @@ These questions reflect realistic business intelligence needs for Microchip's se
 
 ---
 
+---
+
+## ML Prediction Questions (If ML Models Added)
+
+These questions require the optional ML procedures (PREDICT_REVENUE, PREDICT_CUSTOMER_CHURN, PREDICT_DESIGN_WIN_CONVERSION).
+
+### 21. Revenue Forecasting
+
+**Question:** "Forecast revenue for the next 6 months using the revenue predictor model"
+
+**Why Complex:**
+- Calls ML model from Model Registry
+- Time-series forecasting with regression
+- Returns future predictions
+
+**Tool Used:** PREDICT_REVENUE procedure
+
+---
+
+### 22. Customer Churn Prediction
+
+**Question:** "Which customers are predicted to churn according to the churn prediction model? Focus on OEM customers."
+
+**Why Complex:**
+- ML classification model
+- Multi-factor churn analysis
+- Segment-specific filtering
+
+**Tool Used:** PREDICT_CUSTOMER_CHURN procedure
+
+---
+
+### 23. Design Win Conversion Prediction
+
+**Question:** "Use the conversion predictor to identify which PIC family design wins are most likely to go to production"
+
+**Why Complex:**
+- ML probability prediction
+- Product family filtering
+- Conversion likelihood ranking
+
+**Tool Used:** PREDICT_DESIGN_WIN_CONVERSION procedure
+
+---
+
+### 24. Combined ML and Analytics
+
+**Question:** "Forecast revenue for next quarter, then identify which customers are at churn risk and analyze if there's correlation with design win activity"
+
+**Why Complex:**
+- Multiple ML model calls
+- Correlation analysis
+- Cross-functional insights
+
+**Tools Used:** PREDICT_REVENUE + PREDICT_CUSTOMER_CHURN + SV_DESIGN_ENGINEERING_INTELLIGENCE
+
+---
+
+### 25. ML Prediction with Visualization
+
+**Question:** "Forecast revenue for the next 12 months and show the agent's built-in visualization"
+
+**Why Complex:**
+- ML forecasting
+- Data visualization request
+- Time-series chart display
+
+**Tools Used:** PREDICT_REVENUE + agent's built-in data_to_chart
+
+---
+
 **Version:** 1.0  
 **Created:** October 2025  
+**Updated:** Added ML prediction questions (optional)  
 **Based on:** MedTrainer Intelligence Template  
 **Target Use Case:** Microchip Technology semiconductor business intelligence
 
