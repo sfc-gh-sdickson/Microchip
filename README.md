@@ -91,6 +91,10 @@ The solution includes:
 - `sql/views/05_create_semantic_views.sql`: Semantic views for AI agents (verified syntax)
 - `sql/search/06_create_cortex_search.sql`: Unstructured data tables and Cortex Search services
 
+### ML Models (Optional)
+- `notebooks/microchip_ml_models.ipynb`: Snowflake Notebook for training ML models
+- `docs/NOTEBOOK_ML_GUIDE.md`: Guide for using the ML notebook
+
 ## Setup Instructions
 
 1. Execute SQL files in order (01 through 06)
