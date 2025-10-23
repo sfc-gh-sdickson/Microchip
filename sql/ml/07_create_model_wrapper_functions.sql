@@ -25,9 +25,14 @@ HANDLER = 'predict_revenue'
 COMMENT = 'Calls REVENUE_PREDICTOR model from Model Registry to forecast revenue'
 AS
 $$
-def predict_revenue(session, months_ahead):
+from snowflake.snowpark.context import get_active_session
+
+def predict_revenue(months_ahead):
     from snowflake.ml.registry import Registry
     import json
+    
+    # Get active session
+    session = get_active_session()
     
     # Get model from registry
     reg = Registry(session)
@@ -81,9 +86,14 @@ HANDLER = 'predict_churn'
 COMMENT = 'Calls CHURN_PREDICTOR model from Model Registry to identify at-risk customers'
 AS
 $$
-def predict_churn(session, customer_segment_filter):
+from snowflake.snowpark.context import get_active_session
+
+def predict_churn(customer_segment_filter):
     from snowflake.ml.registry import Registry
     import json
+    
+    # Get active session
+    session = get_active_session()
     
     # Get model
     reg = Registry(session)
@@ -151,9 +161,14 @@ HANDLER = 'predict_conversion'
 COMMENT = 'Calls CONVERSION_PREDICTOR model to predict design win conversion probability'
 AS
 $$
-def predict_conversion(session, product_family_filter):
+from snowflake.snowpark.context import get_active_session
+
+def predict_conversion(product_family_filter):
     from snowflake.ml.registry import Registry
     import json
+    
+    # Get active session
+    session = get_active_session()
     
     # Get model
     reg = Registry(session)
