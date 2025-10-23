@@ -29,13 +29,14 @@ GROUP BY DATE_TRUNC('month', order_date)::TIMESTAMP_NTZ
 ORDER BY ts;
 
 -- Design wins time series for anomaly detection
--- Training data: 12 months ago to 2 months ago (leaves recent 2 months for evaluation)
+-- Training data: 12 months ago to 3 months ago (leaves recent 3 months for evaluation)
 CREATE OR REPLACE VIEW V_DESIGN_WINS_TRAINING_DATA AS
 SELECT
     DATE_TRUNC('week', design_win_date)::TIMESTAMP_NTZ AS ts,
     COUNT(DISTINCT design_win_id)::FLOAT AS win_count
 FROM RAW.DESIGN_WINS
-WHERE design_win_date BETWEEN DATEADD('month', -12, CURRENT_DATE()) AND DATEADD('month', -2, CURRENT_DATE())
+WHERE design_win_date < DATEADD('month', -3, CURRENT_DATE())
+  AND design_win_date >= DATEADD('month', -15, CURRENT_DATE())
 GROUP BY DATE_TRUNC('week', design_win_date)::TIMESTAMP_NTZ
 ORDER BY ts;
 
@@ -145,14 +146,14 @@ Then run these test statements to verify models work:
 SELECT '=== Testing REVENUE_FORECAST_MODEL ===' AS test_name;
 CALL REVENUE_FORECAST_MODEL!FORECAST(FORECASTING_PERIODS => 3);
 
--- Test 2: Design Win Anomaly Detection (last 2 months)
+-- Test 2: Design Win Anomaly Detection (last 3 months - AFTER training period)
 SELECT '=== Testing DESIGN_WIN_ANOMALY_MODEL ===' AS test_name;
 CALL DESIGN_WIN_ANOMALY_MODEL!DETECT_ANOMALIES(
   INPUT_DATA => TABLE(SELECT
       DATE_TRUNC('week', design_win_date)::TIMESTAMP_NTZ AS ts,
       COUNT(DISTINCT design_win_id)::FLOAT AS win_count
     FROM RAW.DESIGN_WINS
-    WHERE design_win_date >= DATEADD('month', -2, CURRENT_DATE())
+    WHERE design_win_date >= DATEADD('month', -3, CURRENT_DATE())
     GROUP BY DATE_TRUNC('week', design_win_date)::TIMESTAMP_NTZ),
   TIMESTAMP_COLNAME => 'TS',
   TARGET_COLNAME => 'WIN_COUNT'
