@@ -34,7 +34,6 @@ This Snowflake Intelligence solution demonstrates how Microchip can leverage AI 
 - **Quality Intelligence**: Field failures, RMA analysis, root cause investigations
 - **Certification Impact**: Engineer training effectiveness on design win success
 - **Unstructured Data Search**: Semantic search over support transcripts, application notes, and quality reports using Cortex Search
-- **ML-Powered Analytics** (Optional): Revenue forecasting, anomaly detection, churn prediction, conversion probability
 
 ## Database Schema
 
@@ -87,15 +86,11 @@ The solution includes:
 - `sql/views/04_create_views.sql`: Analytical views
 - `sql/views/05_create_semantic_views.sql`: Semantic views for AI agents (verified syntax)
 - `sql/search/06_create_cortex_search.sql`: Unstructured data tables and Cortex Search services
-- `sql/ml/07_create_ml_models.sql`: ML functions for forecasting, anomaly detection, and prediction (optional)
-- `ML_MODELS_GUIDE.md`: ML capabilities overview (optional enhancement)
-- `ML_AGENT_SETUP.md`: Step-by-step ML function setup (optional)
 - `docs/questions.md`: 20 complex questions the agent can answer
 - `docs/AGENT_SETUP.md`: Complete agent configuration instructions
 
 ## Setup Instructions
 
-### Core Setup (Required)
 1. Execute SQL files in order (01 through 06)
    - 01: Database and schema setup
    - 02: Create tables
@@ -105,11 +100,6 @@ The solution includes:
    - 06: Create Cortex Search services (5-10 min)
 2. Follow AGENT_SETUP.md for agent configuration
 3. Test with questions from questions.md
-
-### Optional: Add ML Capabilities
-4. Execute `sql/ml/07_create_ml_models.sql` (< 5 sec)
-5. Follow `ML_AGENT_SETUP.md` to add 7 ML functions as agent tools
-6. Test forecasting, anomaly detection, and predictions
 
 ## Data Model Highlights
 
@@ -141,8 +131,7 @@ The solution includes:
 ✅ **Production-Ready Syntax**: All SQL verified against Snowflake documentation  
 ✅ **Comprehensive Demo**: 1M+ orders, 500K design wins, 25K support transcripts  
 ✅ **Verified Syntax**: CREATE SEMANTIC VIEW and CREATE CORTEX SEARCH SERVICE syntax verified against official Snowflake documentation  
-✅ **No Duplicate Synonyms**: All semantic view synonyms globally unique across all three views  
-✅ **ML-Powered** (Optional): Forecasting, anomaly detection, churn prediction - 7 ML functions available
+✅ **No Duplicate Synonyms**: All semantic view synonyms globally unique across all three views
 
 ## Complex Questions Examples
 
@@ -261,9 +250,6 @@ Key verification points:
 
 -- 6. Create Cortex Search services (5-10 minutes)
 @sql/search/06_create_cortex_search.sql
-
--- OPTIONAL: Add ML forecasting and anomaly detection
-@sql/ml/07_create_ml_models.sql
 ```
 
 ### Configure Agent
