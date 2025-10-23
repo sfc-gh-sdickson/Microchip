@@ -130,5 +130,39 @@ SELECT 'ML models created successfully' AS status;
 
 SHOW MODELS IN SCHEMA ANALYTICS;
 
-SELECT 'Models can now be added as tools to the Intelligence Agent' AS next_step;
+-- ============================================================================
+-- Test Each Model
+-- ============================================================================
+
+-- Test 1: Revenue Forecast (predict next 3 months)
+SELECT '=== Testing REVENUE_FORECAST_MODEL ===' AS test_name;
+CALL REVENUE_FORECAST_MODEL!FORECAST(FORECASTING_PERIODS => 3);
+
+-- Test 2: Design Win Anomaly Detection
+SELECT '=== Testing DESIGN_WIN_ANOMALY_MODEL ===' AS test_name;
+CALL DESIGN_WIN_ANOMALY_MODEL!DETECT_ANOMALIES(
+  INPUT_DATA => SYSTEM$REFERENCE('VIEW', 'V_DESIGN_WINS_TRAINING_DATA'),
+  TIMESTAMP_COLNAME => 'TS',
+  TARGET_COLNAME => 'WIN_COUNT'
+);
+
+-- Test 3: Customer Churn Classification (predict on training data sample)
+SELECT '=== Testing CUSTOMER_CHURN_CLASSIFIER ===' AS test_name;
+CALL CUSTOMER_CHURN_CLASSIFIER!PREDICT(
+  INPUT_DATA => SYSTEM$QUERY_REFERENCE('SELECT * FROM V_CHURN_TRAINING_DATA LIMIT 10')
+);
+
+-- Test 4: Revenue Top Insights
+SELECT '=== Testing REVENUE_INSIGHTS_ANALYZER ===' AS test_name;
+CALL REVENUE_INSIGHTS_ANALYZER!GET_DRIVERS(
+  INPUT_DATA => SYSTEM$REFERENCE('VIEW', 'V_INSIGHTS_ANALYSIS_DATA'),
+  LABEL_COLNAME => 'LABEL',
+  METRIC_COLNAME => 'METRIC'
+);
+
+-- ============================================================================
+-- Final Status
+-- ============================================================================
+
+SELECT 'All ML models tested successfully and ready for agent integration' AS final_status;
 
