@@ -11,8 +11,11 @@ USE SCHEMA ANALYTICS;
 USE WAREHOUSE MICROCHIP_WH;
 
 -- ============================================================================
--- Function 1: Revenue Forecast Wrapper
+-- Procedure 1: Revenue Forecast Wrapper
 -- ============================================================================
+
+-- Drop if exists (in case it was created as FUNCTION before)
+DROP FUNCTION IF EXISTS PREDICT_REVENUE(INT);
 
 CREATE OR REPLACE PROCEDURE PREDICT_REVENUE(
     MONTHS_AHEAD INT
@@ -67,8 +70,11 @@ def predict_revenue(session, months_ahead):
 $$;
 
 -- ============================================================================
--- Function 2: Customer Churn Prediction Wrapper
+-- Procedure 2: Customer Churn Prediction Wrapper
 -- ============================================================================
+
+-- Drop if exists (in case it was created as FUNCTION before)
+DROP FUNCTION IF EXISTS PREDICT_CUSTOMER_CHURN(STRING);
 
 CREATE OR REPLACE PROCEDURE PREDICT_CUSTOMER_CHURN(
     CUSTOMER_SEGMENT_FILTER STRING
@@ -137,8 +143,11 @@ def predict_churn(session, customer_segment_filter):
 $$;
 
 -- ============================================================================
--- Function 3: Design Win Conversion Prediction Wrapper
+-- Procedure 3: Design Win Conversion Prediction Wrapper
 -- ============================================================================
+
+-- Drop if exists (in case it was created as FUNCTION before)
+DROP FUNCTION IF EXISTS PREDICT_DESIGN_WIN_CONVERSION(STRING);
 
 CREATE OR REPLACE PROCEDURE PREDICT_DESIGN_WIN_CONVERSION(
     PRODUCT_FAMILY_FILTER STRING
