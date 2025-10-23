@@ -139,9 +139,19 @@ SELECT '=== Testing REVENUE_FORECAST_MODEL ===' AS test_name;
 CALL REVENUE_FORECAST_MODEL!FORECAST(FORECASTING_PERIODS => 3);
 
 -- Test 2: Design Win Anomaly Detection
+-- Note: DETECT_ANOMALIES requires evaluation data AFTER training data timestamps
+-- For testing, we'll use recent weeks not in the training set
 SELECT '=== Testing DESIGN_WIN_ANOMALY_MODEL ===' AS test_name;
 CALL DESIGN_WIN_ANOMALY_MODEL!DETECT_ANOMALIES(
-  INPUT_DATA => SYSTEM$REFERENCE('VIEW', 'V_DESIGN_WINS_TRAINING_DATA'),
+  INPUT_DATA => SYSTEM$QUERY_REFERENCE('
+    SELECT
+      DATE_TRUNC(''week'', design_win_date)::TIMESTAMP_NTZ AS ts,
+      COUNT(DISTINCT design_win_id)::FLOAT AS win_count
+    FROM RAW.DESIGN_WINS
+    WHERE design_win_date >= DATEADD(''week'', -4, CURRENT_DATE())
+    GROUP BY DATE_TRUNC(''week'', design_win_date)::TIMESTAMP_NTZ
+    ORDER BY ts
+  '),
   TIMESTAMP_COLNAME => 'TS',
   TARGET_COLNAME => 'WIN_COUNT'
 );
