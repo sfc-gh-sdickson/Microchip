@@ -179,13 +179,6 @@ GRANT USAGE ON CORTEX SEARCH SERVICE MICROCHIP_INTELLIGENCE.RAW.QUALITY_INVESTIG
    - Summarize technical findings in brief, focused responses
    - Maintain context from original technical documentation
 
-   For chart and visualization requests:
-   - Use the inline chart generation functions (GENERATE_DONUT_CHART, GENERATE_BAR_CHART, etc.)
-   - Query data from semantic views and convert to JSON
-   - Call appropriate chart function and display Vega-Lite spec inline
-   - For "3D pie" requests, use GENERATE_DONUT_CHART (enhanced donut = closest to 3D inline)
-   - Charts will render directly in this chat interface
-
    Operating guidelines:
    - Always identify whether you're using Cortex Analyst or Cortex Search for each response
    - Keep responses under 3-4 sentences when possible for metrics
@@ -194,15 +187,12 @@ GRANT USAGE ON CORTEX SEARCH SERVICE MICROCHIP_INTELLIGENCE.RAW.QUALITY_INVESTIG
    - Highlight quality issues and design win conversion metrics prominently
    - For technical support queries, reference specific product families and issue types
    - Include relevant application note references when available
-   - For chart requests, use inline chart functions to display visualizations directly in chat
    ```
 
 3. **Add Sample Questions** (click "Add a question" for each):
    - "Which products are winning the most designs in automotive?"
    - "What is our competitive win rate against STMicroelectronics?"
    - "Search support transcripts for I2C communication problems"
-   - "Show me design wins by product family in a donut chart"
-   - "Display revenue trends as a line chart"
 
 ---
 
@@ -333,67 +323,9 @@ GRANT USAGE ON CORTEX SEARCH SERVICE MICROCHIP_INTELLIGENCE.RAW.QUALITY_INVESTIG
 
 ---
 
-## Step 4: Add Inline Chart Generation Functions (Recommended)
+## Step 4: Test the Agent
 
-This step adds functions that generate Vega-Lite chart specifications for **inline rendering** directly in the agent chat interface.
-
-**Note:** Intelligence Agents can only render Vega-Lite charts inline (not true 3D Plotly). The functions create enhanced donut charts and gradient visualizations for the best visual appearance.
-
-### Step 4.1: Create Inline Chart Functions
-
-1. Execute the inline chart function SQL:
-```sql
--- Execute: sql/tools/09_agent_inline_charts.sql
--- Creates Python UDFs that return Vega-Lite specifications
--- Charts will render inline in agent chat interface
--- Execution time: < 5 seconds
-```
-
-### Step 4.2: Grant Permissions for Chart Functions
-
-```sql
-USE ROLE ACCOUNTADMIN;
-
--- Grant execute permissions on inline chart functions
-GRANT USAGE ON FUNCTION MICROCHIP_INTELLIGENCE.ANALYTICS.GENERATE_DONUT_CHART(VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO ROLE <your_role>;
-GRANT USAGE ON FUNCTION MICROCHIP_INTELLIGENCE.ANALYTICS.GENERATE_BAR_CHART(VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO ROLE <your_role>;
-GRANT USAGE ON FUNCTION MICROCHIP_INTELLIGENCE.ANALYTICS.GENERATE_LINE_CHART(VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO ROLE <your_role>;
-GRANT USAGE ON FUNCTION MICROCHIP_INTELLIGENCE.ANALYTICS.GENERATE_AREA_CHART(VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO ROLE <your_role>;
-```
-
-### Step 4.3: Configure Agent to Use Inline Chart Functions
-
-Add this to your agent's **Response Instructions** (in addition to existing instructions):
-
-```
-For chart and visualization requests:
-- When users ask for pie charts or "3D pie charts", use GENERATE_DONUT_CHART() function
-- When users ask for bar charts, use GENERATE_BAR_CHART() function  
-- When users ask for trend/line charts, use GENERATE_LINE_CHART() function
-- When users ask for area charts, use GENERATE_AREA_CHART() function
-
-Chart function usage:
-1. Query the data from appropriate semantic view
-2. Convert results to JSON string format
-3. Call the chart function with: data_json, label_field, value_field, title
-4. Display the returned Vega-Lite spec inline
-
-For "3D pie chart" requests:
-- Use GENERATE_DONUT_CHART() which creates an enhanced donut chart
-- Explain: "Here's an enhanced donut chart (the closest to 3D that displays inline)"
-- The donut style with gradient colors provides depth perception
-
-Example:
-User: "Show me design wins by product family in a 3D pie chart"
-Response: [Query data] → [Call GENERATE_DONUT_CHART()] → [Display chart inline]
-"Here's an enhanced donut chart showing design wins by product family..."
-```
-
----
-
-## Step 5: Test the Agent
-
-### Step 5.1: Test Structured Data Queries (Cortex Analyst)
+### Step 4.1: Test Structured Data Queries (Cortex Analyst)
 
 1. In the agent interface, click **Chat**
 2. Try these test questions:
@@ -428,7 +360,7 @@ What is the average support ticket resolution time by ticket category?
 ```
 Expected: Uses SV_CUSTOMER_SUPPORT_INTELLIGENCE, calculates averages by ticket_category
 
-### Step 5.2: Test Unstructured Data Queries (Cortex Search)
+### Step 4.2: Test Unstructured Data Queries (Cortex Search)
 
 **Test 6: Technical Support Search**
 ```
@@ -460,7 +392,7 @@ What guidance do our application notes provide about motor control FOC implement
 ```
 Expected: Uses APPLICATION_NOTES_SEARCH, retrieves motor control procedures
 
-### Step 5.3: Test Combined Queries (Structured + Unstructured)
+### Step 4.3: Test Combined Queries (Structured + Unstructured)
 
 **Test 11: Product Quality + Support Analysis**
 ```
@@ -476,39 +408,11 @@ implementation guidance.
 ```
 Expected: Uses SV_DESIGN_ENGINEERING_INTELLIGENCE and APPLICATION_NOTES_SEARCH
 
-### Step 5.4: Test Chart Generation (If Added)
-
-If you added the chart generation tool in Step 4:
-
-**Test 1: Simple Pie Chart**
-```
-Show me the top 10 products by design wins in a pie chart
-```
-Expected: Agent queries design wins data, passes to Streamlit app, generates pie chart
-
-**Test 2: 3D Pie Chart**
-```
-Create a 3D pie chart of revenue by customer segment
-```
-Expected: Agent queries revenue data, generates 3D pie visualization
-
-**Test 3: Bar Chart**
-```
-Display distributor performance as a bar chart
-```
-Expected: Agent shows comparative bar chart of distributor metrics
-
-**Test 4: Scatter Plot**
-```
-Show me a scatter plot of product price versus flash memory size
-```
-Expected: Agent creates scatter plot showing price/memory correlation
-
 ---
 
-## Step 6: Advanced Configuration (Optional)
+## Step 5: Advanced Configuration (Optional)
 
-### 6.1: Add Guardrails
+### 5.1: Add Guardrails
 
 In the **Instructions** section, you can add specific guardrails:
 ```
@@ -517,7 +421,7 @@ Always cite data sources (semantic view or Cortex Search service used).
 For quality issues, maintain customer confidentiality.
 ```
 
-### 6.2: Configure Response Formatting
+### 5.2: Configure Response Formatting
 
 Add formatting preferences to the instructions:
 ```

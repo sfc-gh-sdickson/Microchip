@@ -80,32 +80,26 @@ The solution includes:
 
 - `MAPPING_DOCUMENT.md`: Entity mapping from MedTrainer template to Microchip
 - `README.md`: This comprehensive solution documentation
-- `CHART_TOOL_README.md`: Chart generation tool documentation
 - `sql/setup/01_database_and_schema.sql`: Database and schema creation
 - `sql/setup/02_create_tables.sql`: Table definitions with proper constraints
 - `sql/data/03_generate_synthetic_data.sql`: Realistic semiconductor sample data
 - `sql/views/04_create_views.sql`: Analytical views
 - `sql/views/05_create_semantic_views.sql`: Semantic views for AI agents (verified syntax)
 - `sql/search/06_create_cortex_search.sql`: Unstructured data tables and Cortex Search services
-- `sql/tools/07_create_chart_function.sql`: Chart generation Python UDFs
-- `streamlit/chart_app.py`: Streamlit chart generator app
 - `docs/questions.md`: 20 complex questions the agent can answer
 - `docs/AGENT_SETUP.md`: Complete agent configuration instructions
 
 ## Setup Instructions
 
-1. Execute SQL files in order (01 through 07)
+1. Execute SQL files in order (01 through 06)
    - 01: Database and schema setup
    - 02: Create tables
    - 03: Generate synthetic data (10-20 min)
    - 04: Create analytical views
    - 05: Create semantic views
    - 06: Create Cortex Search services (5-10 min)
-   - 07: Create chart generation functions
-2. Deploy Streamlit chart app (see CHART_TOOL_README.md)
-3. Follow AGENT_SETUP.md for agent configuration
-4. Test with questions from questions.md
-5. Test chart generation: "Show me design wins in a 3D pie chart"
+2. Follow AGENT_SETUP.md for agent configuration
+3. Test with questions from questions.md
 
 ## Data Model Highlights
 
@@ -137,8 +131,7 @@ The solution includes:
 ✅ **Production-Ready Syntax**: All SQL verified against Snowflake documentation  
 ✅ **Comprehensive Demo**: 1M+ orders, 500K design wins, 25K support transcripts  
 ✅ **Verified Syntax**: CREATE SEMANTIC VIEW and CREATE CORTEX SEARCH SERVICE syntax verified against official Snowflake documentation  
-✅ **No Duplicate Synonyms**: All semantic view synonyms globally unique across all three views  
-✅ **Chart Generation**: Integrated Streamlit charting tool - request "show me this in a 3D pie chart" - 100% Snowflake-native, no external dependencies
+✅ **No Duplicate Synonyms**: All semantic view synonyms globally unique across all three views
 
 ## Complex Questions Examples
 
@@ -257,21 +250,15 @@ Key verification points:
 
 -- 6. Create Cortex Search services (5-10 minutes)
 @sql/search/06_create_cortex_search.sql
-
--- 7. Create chart generation functions
-@sql/tools/07_create_chart_function.sql
 ```
-
-Then deploy the Streamlit app (see `CHART_TOOL_README.md` for details)
 
 ### Configure Agent
 Follow the detailed instructions in `docs/AGENT_SETUP.md` to:
 1. Create the Snowflake Intelligence Agent
 2. Add semantic views as data sources (Cortex Analyst)
 3. Configure Cortex Search services
-4. Add Streamlit chart generation tool
-5. Set up system prompts and instructions
-6. Test with sample questions and visualizations
+4. Set up system prompts and instructions
+5. Test with sample questions
 
 ## Testing
 
@@ -297,8 +284,6 @@ SELECT PARSE_JSON(
 2. "What is our competitive win rate against STMicroelectronics?"
 3. "Show me customers at risk of churn based on declining order patterns."
 4. "Search support transcripts for USB enumeration failures and recommended solutions."
-5. "Create a 3D pie chart of design wins by product family."
-6. "Display monthly revenue trends as a line chart for the past year."
 
 ## Data Volumes
 
