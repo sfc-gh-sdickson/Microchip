@@ -65,30 +65,127 @@ This notebook trains 3 ML models using Snowpark ML and registers them to the Mod
 
 ---
 
-## Adding Models to Intelligence Agent
+## Adding ML Procedures to Intelligence Agent
 
-### After Notebook Execution:
+**After completing notebook execution and running file 07:**
 
-1. **Navigate to Agent:**
-   - Snowsight → AI & ML → Agents → MICROCHIP_INTELLIGENCE_AGENT
+### Step 1: Navigate to Your Agent
 
-2. **Add Model 1: Revenue Forecast**
-   - Tools → + Add → Model
-   - Select: `MICROCHIP_INTELLIGENCE.ANALYTICS.REVENUE_FORECAST_MODEL`
-   - Description: "Forecasts monthly revenue using regression on historical order data"
-   - Save
+1. In Snowsight, click **AI & ML** (left sidebar)
+2. Click **Agents**
+3. Click on **MICROCHIP_INTELLIGENCE_AGENT**
+4. The agent editor opens
+5. Click **Tools** (left sidebar in agent editor)
 
-3. **Add Model 2: Churn Classifier**
-   - Tools → + Add → Model
-   - Select: `MICROCHIP_INTELLIGENCE.ANALYTICS.CUSTOMER_CHURN_CLASSIFIER`
-   - Description: "Predicts customer churn risk using Random Forest classification"
-   - Save
+---
 
-4. **Add Model 3: Conversion Predictor**
-   - Tools → + Add → Model
-   - Select: `MICROCHIP_INTELLIGENCE.ANALYTICS.DESIGN_WIN_CONVERSION_PREDICTOR`
-   - Description: "Predicts design win to production conversion probability"
-   - Save
+### Step 2: Add Procedure 1 - PREDICT_REVENUE
+
+1. Click **+ Add** button (top right of Tools section)
+2. A modal window opens titled "Add tool"
+3. Click on the **Procedure** tile (NOT Function)
+4. In the "Select a procedure" dropdown:
+   - Start typing: `PREDICT_REVENUE`
+   - Select: `MICROCHIP_INTELLIGENCE.ANALYTICS.PREDICT_REVENUE`
+5. The procedure details appear below
+6. Click in the **Description** box
+7. Paste this exact text:
+   ```
+   Revenue Forecasting Procedure
+   
+   Predicts future monthly revenue using the REVENUE_PREDICTOR model from Model Registry.
+   The model uses Linear Regression trained on historical order patterns.
+   
+   Use when users ask to:
+   - Forecast revenue
+   - Predict future sales
+   - Project monthly revenue
+   - Estimate upcoming revenue
+   
+   Parameter:
+   - months_ahead: Number of months to forecast (1-12 recommended)
+   
+   Returns: JSON with predicted revenue amount
+   
+   Example: "Forecast revenue for the next 6 months"
+   ```
+8. Click **Add** button (bottom right of modal)
+9. Verify "PREDICT_REVENUE" appears in your Tools list under Procedures
+
+---
+
+### Step 3: Add Procedure 2 - PREDICT_CUSTOMER_CHURN
+
+1. Click **+ Add** button again
+2. Click **Procedure** tile
+3. In dropdown, select: `MICROCHIP_INTELLIGENCE.ANALYTICS.PREDICT_CUSTOMER_CHURN`
+4. In **Description** box, paste:
+   ```
+   Customer Churn Prediction Procedure
+   
+   Predicts which customers are at risk of churning using the CHURN_PREDICTOR model
+   from Model Registry. Uses Random Forest classifier trained on behavior patterns.
+   
+   Use when users ask to:
+   - Identify at-risk customers
+   - Predict customer churn
+   - Find customers likely to leave
+   - Calculate churn risk
+   
+   Parameter:
+   - customer_segment_filter: Filter by segment (OEM, CONTRACT_MANUFACTURER, DISTRIBUTOR)
+     or empty string for all customers
+   
+   Returns: JSON with churn count and churn rate percentage
+   
+   Example: "Which OEM customers are predicted to churn?"
+   ```
+5. Click **Add**
+6. Verify "PREDICT_CUSTOMER_CHURN" appears in Tools list
+
+---
+
+### Step 4: Add Procedure 3 - PREDICT_DESIGN_WIN_CONVERSION
+
+1. Click **+ Add** button
+2. Click **Procedure** tile
+3. Select: `MICROCHIP_INTELLIGENCE.ANALYTICS.PREDICT_DESIGN_WIN_CONVERSION`
+4. Paste in **Description**:
+   ```
+   Design Win Conversion Prediction Procedure
+   
+   Predicts which design wins are likely to convert to production using the
+   CONVERSION_PREDICTOR model from Model Registry. Uses Logistic Regression.
+   
+   Use when users ask to:
+   - Predict conversion probability
+   - Identify high-probability designs
+   - Find designs likely to go to production
+   - Prioritize design wins
+   
+   Parameter:
+   - product_family_filter: Filter by family (PIC, AVR, SAM, dsPIC, FPGA, etc.)
+     or empty string for all families
+   
+   Returns: JSON with conversion count and conversion rate percentage
+   
+   Example: "Which PIC family design wins will likely convert to production?"
+   ```
+5. Click **Add**
+6. Verify "PREDICT_DESIGN_WIN_CONVERSION" appears in Tools list
+
+---
+
+### Step 5: Verify All Procedures Added
+
+In your agent's **Tools** section, you should now see under **Procedures (3)**:
+- ✅ PREDICT_REVENUE
+- ✅ PREDICT_CUSTOMER_CHURN
+- ✅ PREDICT_DESIGN_WIN_CONVERSION
+
+Also under **Cortex Analyst (3)** and **Cortex Search (3)** from core setup.
+
+**Total tools: 9** (3 semantic views + 3 search services + 3 ML procedures)
 
 ---
 
