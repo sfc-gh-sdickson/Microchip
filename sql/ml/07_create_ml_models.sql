@@ -148,8 +148,8 @@ $$
         at.product_family,
         ROUND(at.avg_monthly_wins + (UNIFORM(-10, 10, RANDOM()) / 100.0) * at.avg_monthly_wins)::NUMBER(10,0) AS forecasted_design_wins,
         CASE
-            WHEN at.std_dev / at.avg_monthly_wins < 0.2 THEN 'HIGH'
-            WHEN at.std_dev / at.avg_monthly_wins < 0.4 THEN 'MEDIUM'
+            WHEN at.std_dev / NULLIF(at.avg_monthly_wins, 0) < 0.2 THEN 'HIGH'
+            WHEN at.std_dev / NULLIF(at.avg_monthly_wins, 0) < 0.4 THEN 'MEDIUM'
             ELSE 'LOW'
         END AS confidence_level
     FROM forecast_periods fp
