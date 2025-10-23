@@ -14,7 +14,7 @@ USE WAREHOUSE MICROCHIP_WH;
 -- Function 1: Revenue Forecast Wrapper
 -- ============================================================================
 
-CREATE OR REPLACE FUNCTION PREDICT_REVENUE(
+CREATE OR REPLACE PROCEDURE PREDICT_REVENUE(
     MONTHS_AHEAD INT
 )
 RETURNS STRING
@@ -25,14 +25,9 @@ HANDLER = 'predict_revenue'
 COMMENT = 'Calls REVENUE_PREDICTOR model from Model Registry to forecast revenue'
 AS
 $$
-from snowflake.snowpark.context import get_active_session
-
-def predict_revenue(months_ahead):
+def predict_revenue(session, months_ahead):
     from snowflake.ml.registry import Registry
     import json
-    
-    # Get active session
-    session = get_active_session()
     
     # Get model from registry
     reg = Registry(session)
@@ -75,7 +70,7 @@ $$;
 -- Function 2: Customer Churn Prediction Wrapper
 -- ============================================================================
 
-CREATE OR REPLACE FUNCTION PREDICT_CUSTOMER_CHURN(
+CREATE OR REPLACE PROCEDURE PREDICT_CUSTOMER_CHURN(
     CUSTOMER_SEGMENT_FILTER STRING
 )
 RETURNS STRING
@@ -86,14 +81,9 @@ HANDLER = 'predict_churn'
 COMMENT = 'Calls CHURN_PREDICTOR model from Model Registry to identify at-risk customers'
 AS
 $$
-from snowflake.snowpark.context import get_active_session
-
-def predict_churn(customer_segment_filter):
+def predict_churn(session, customer_segment_filter):
     from snowflake.ml.registry import Registry
     import json
-    
-    # Get active session
-    session = get_active_session()
     
     # Get model
     reg = Registry(session)
@@ -150,7 +140,7 @@ $$;
 -- Function 3: Design Win Conversion Prediction Wrapper
 -- ============================================================================
 
-CREATE OR REPLACE FUNCTION PREDICT_DESIGN_WIN_CONVERSION(
+CREATE OR REPLACE PROCEDURE PREDICT_DESIGN_WIN_CONVERSION(
     PRODUCT_FAMILY_FILTER STRING
 )
 RETURNS STRING
@@ -161,14 +151,9 @@ HANDLER = 'predict_conversion'
 COMMENT = 'Calls CONVERSION_PREDICTOR model to predict design win conversion probability'
 AS
 $$
-from snowflake.snowpark.context import get_active_session
-
-def predict_conversion(product_family_filter):
+def predict_conversion(session, product_family_filter):
     from snowflake.ml.registry import Registry
     import json
-    
-    # Get active session
-    session = get_active_session()
     
     # Get model
     reg = Registry(session)
@@ -216,11 +201,11 @@ $$;
 
 SELECT 'ML model wrapper functions created successfully' AS status;
 
--- Test each function (uncomment after models are registered via notebook)
+-- Test each procedure (uncomment after models are registered via notebook)
 /*
-SELECT PREDICT_REVENUE(6) AS revenue_forecast_6_months;
-SELECT PREDICT_CUSTOMER_CHURN('OEM') AS oem_churn_prediction;
-SELECT PREDICT_DESIGN_WIN_CONVERSION('PIC') AS pic_conversion_prediction;
+CALL PREDICT_REVENUE(6);
+CALL PREDICT_CUSTOMER_CHURN('OEM');
+CALL PREDICT_DESIGN_WIN_CONVERSION('PIC');
 */
 
 SELECT 'Execute notebook first to register models, then uncomment tests above' AS instruction;
