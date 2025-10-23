@@ -86,6 +86,8 @@ The solution includes:
 - `sql/views/04_create_views.sql`: Analytical views
 - `sql/views/05_create_semantic_views.sql`: Semantic views for AI agents (verified syntax)
 - `sql/search/06_create_cortex_search.sql`: Unstructured data tables and Cortex Search services
+- `sql/ml/07_create_ml_views.sql`: ML analytics views - churn risk, anomalies, forecasting (optional)
+- `ML_VIEWS_GUIDE.md`: ML views quick guide (optional)
 - `docs/questions.md`: 20 complex questions the agent can answer
 - `docs/AGENT_SETUP.md`: Complete agent configuration instructions
 
@@ -250,6 +252,9 @@ Key verification points:
 
 -- 6. Create Cortex Search services (5-10 minutes)
 @sql/search/06_create_cortex_search.sql
+
+-- OPTIONAL: ML analytics views (churn risk, anomalies, forecasting)
+@sql/ml/07_create_ml_views.sql
 ```
 
 ### Configure Agent
