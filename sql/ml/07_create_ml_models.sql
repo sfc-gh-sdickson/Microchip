@@ -58,7 +58,7 @@ CREATE OR REPLACE FUNCTION FORECAST_MONTHLY_REVENUE(
     MONTHS_AHEAD INT
 )
 RETURNS TABLE (
-    forecast_month DATE,
+    forecast_month TIMESTAMP_NTZ,
     forecasted_revenue NUMBER(15,2),
     lower_bound NUMBER(15,2),
     upper_bound NUMBER(15,2)
@@ -108,7 +108,7 @@ CREATE OR REPLACE FUNCTION FORECAST_DESIGN_WINS(
     MONTHS_AHEAD INT
 )
 RETURNS TABLE (
-    forecast_month DATE,
+    forecast_month TIMESTAMP_NTZ,
     product_family VARCHAR,
     forecasted_design_wins NUMBER(10,0),
     confidence_level VARCHAR
@@ -476,7 +476,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION DETECT_SUPPORT_ANOMALIES()
 RETURNS TABLE (
-    week_start DATE,
+    week_start TIMESTAMP_NTZ,
     ticket_count NUMBER,
     expected_count NUMBER,
     deviation NUMBER,
