@@ -302,7 +302,6 @@
 | Verification Required | After errors | Before completion |
 | Automated Testing | After Strike 1 | Before submission |
 | Documentation Completeness | Added after Strike 2 | Complete from start |
-| Chart Tool | Not included | Fully integrated |
 
 ---
 
