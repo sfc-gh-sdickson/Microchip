@@ -180,11 +180,11 @@ GRANT USAGE ON CORTEX SEARCH SERVICE MICROCHIP_INTELLIGENCE.RAW.QUALITY_INVESTIG
    - Maintain context from original technical documentation
 
    For chart and visualization requests:
-   - Use the Streamlit Chart Generator tool when users ask for charts
-   - Provide the SQL query and clear step-by-step instructions
-   - Explain that the chart will open in the Streamlit app window
-   - Tell users exactly which chart type to select (e.g., "3D Pie Chart")
-   - Charts render in Streamlit, not in this chat interface
+   - Use the inline chart generation functions (GENERATE_DONUT_CHART, GENERATE_BAR_CHART, etc.)
+   - Query data from semantic views and convert to JSON
+   - Call appropriate chart function and display Vega-Lite spec inline
+   - For "3D pie" requests, use GENERATE_DONUT_CHART (enhanced donut = closest to 3D inline)
+   - Charts will render directly in this chat interface
 
    Operating guidelines:
    - Always identify whether you're using Cortex Analyst or Cortex Search for each response
@@ -194,14 +194,15 @@ GRANT USAGE ON CORTEX SEARCH SERVICE MICROCHIP_INTELLIGENCE.RAW.QUALITY_INVESTIG
    - Highlight quality issues and design win conversion metrics prominently
    - For technical support queries, reference specific product families and issue types
    - Include relevant application note references when available
-   - For chart requests, open the Streamlit tool and provide clear instructions
+   - For chart requests, use inline chart functions to display visualizations directly in chat
    ```
 
 3. **Add Sample Questions** (click "Add a question" for each):
    - "Which products are winning the most designs in automotive?"
    - "What is our competitive win rate against STMicroelectronics?"
    - "Search support transcripts for I2C communication problems"
-   - "Show me design wins by product family in a 3D pie chart"
+   - "Show me design wins by product family in a donut chart"
+   - "Display revenue trends as a line chart"
 
 ---
 
@@ -332,117 +333,61 @@ GRANT USAGE ON CORTEX SEARCH SERVICE MICROCHIP_INTELLIGENCE.RAW.QUALITY_INVESTIG
 
 ---
 
-## Step 4: Add Chart Generation Tool (Optional but Recommended)
+## Step 4: Add Inline Chart Generation Functions (Recommended)
 
-This step adds a Streamlit-based chart generation capability so users can request visualizations like "show me this data in a 3D pie chart" - all running within Snowflake.
+This step adds functions that generate Vega-Lite chart specifications for **inline rendering** directly in the agent chat interface.
 
-### Step 4.1: Create Chart Generation Functions
+**Note:** Intelligence Agents can only render Vega-Lite charts inline (not true 3D Plotly). The functions create enhanced donut charts and gradient visualizations for the best visual appearance.
 
-1. Execute the chart function SQL:
+### Step 4.1: Create Inline Chart Functions
+
+1. Execute the inline chart function SQL:
 ```sql
--- Execute: sql/tools/07_create_chart_function.sql
--- Creates Python UDFs for chart generation
+-- Execute: sql/tools/09_agent_inline_charts.sql
+-- Creates Python UDFs that return Vega-Lite specifications
+-- Charts will render inline in agent chat interface
 -- Execution time: < 5 seconds
 ```
 
-### Step 4.2: Deploy Streamlit Chart App in Snowflake
-
-1. In Snowsight, navigate to **Streamlit** in the left sidebar
-2. Click **+ Streamlit App**
-3. Configure the app:
-   - **App name**: `MICROCHIP_CHART_GENERATOR`
-   - **Warehouse**: Select `MICROCHIP_WH`
-   - **App location**: 
-     - Database: `MICROCHIP_INTELLIGENCE`
-     - Schema: `ANALYTICS`
-4. Click **Create**
-5. Replace the default code with the contents of `streamlit/chart_app.py`
-6. Click **Run** to test the app
-7. Verify the app loads and shows the chart configuration interface
-
-### Step 4.3: Add Chart Tool to Agent
-
-1. Go back to your Intelligence Agent (`MICROCHIP_INTELLIGENCE_AGENT`)
-2. Click **Tools** in the left pane
-3. Find **Streamlit** and click **+ Add**
-
-**Configure Streamlit Chart Tool:**
-
-1. **Select Streamlit app**: `MICROCHIP_INTELLIGENCE.ANALYTICS.MICROCHIP_CHART_GENERATOR`
-2. **Add a description**:
-   ```
-   CHART VISUALIZATION TOOL - Opens interactive chart generator for 3D and advanced visualizations.
-   
-   When users request charts (especially 3D pie charts, 3D scatter plots), use this tool to:
-   1. Open the Streamlit chart generator app
-   2. Provide the user with the SQL query to paste
-   3. Instruct them to select the chart type (e.g., "3D Pie Chart")
-   4. Guide them to generate the visualization
-   
-   Supported chart types in the Streamlit app:
-   - 3D Pie Charts (with pull effects and donut style)
-   - 3D Scatter Plots (interactive rotation)
-   - Standard charts: Bar, Line, Scatter, Area, Histogram, Box Plot
-   
-   IMPORTANT: The actual 3D charts render in the Streamlit app window, not in this chat.
-   When invoked, tell the user:
-   "Opening the chart generator... Please follow these steps in the app that opens:
-   1. Paste this query: [SQL query]
-   2. Click 'Execute Query'
-   3. Select '[Chart Type]'
-   4. Click 'Generate Chart'
-   You'll see your interactive 3D visualization!"
-   
-   Example user requests:
-   - "Show me this in a 3D pie chart"
-   - "Create a 3D scatter plot of price, flash, and RAM"
-   - "Display as a bar chart"
-   ```
-3. **Save**
-
-### Step 4.4: Grant Permissions for Chart Functions
+### Step 4.2: Grant Permissions for Chart Functions
 
 ```sql
 USE ROLE ACCOUNTADMIN;
 
--- Grant execute permissions on chart functions
-GRANT USAGE ON FUNCTION MICROCHIP_INTELLIGENCE.ANALYTICS.GENERATE_CHART_SPEC(VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO ROLE <your_role>;
-GRANT USAGE ON PROCEDURE MICROCHIP_INTELLIGENCE.ANALYTICS.CREATE_AGENT_CHART(VARIANT, VARCHAR, VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO ROLE <your_role>;
-
--- Grant usage on Streamlit app
-GRANT USAGE ON STREAMLIT MICROCHIP_INTELLIGENCE.ANALYTICS.MICROCHIP_CHART_GENERATOR TO ROLE <your_role>;
+-- Grant execute permissions on inline chart functions
+GRANT USAGE ON FUNCTION MICROCHIP_INTELLIGENCE.ANALYTICS.GENERATE_DONUT_CHART(VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO ROLE <your_role>;
+GRANT USAGE ON FUNCTION MICROCHIP_INTELLIGENCE.ANALYTICS.GENERATE_BAR_CHART(VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO ROLE <your_role>;
+GRANT USAGE ON FUNCTION MICROCHIP_INTELLIGENCE.ANALYTICS.GENERATE_LINE_CHART(VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO ROLE <your_role>;
+GRANT USAGE ON FUNCTION MICROCHIP_INTELLIGENCE.ANALYTICS.GENERATE_AREA_CHART(VARCHAR, VARCHAR, VARCHAR, VARCHAR) TO ROLE <your_role>;
 ```
 
-### Step 4.5: Test Chart Generation
+### Step 4.3: Configure Agent to Use Inline Chart Functions
 
-Test the chart tool with these prompts:
+Add this to your agent's **Response Instructions** (in addition to existing instructions):
 
-1. **Simple pie chart**:
-   ```
-   Show me design wins by product family in a pie chart
-   ```
+```
+For chart and visualization requests:
+- When users ask for pie charts or "3D pie charts", use GENERATE_DONUT_CHART() function
+- When users ask for bar charts, use GENERATE_BAR_CHART() function  
+- When users ask for trend/line charts, use GENERATE_LINE_CHART() function
+- When users ask for area charts, use GENERATE_AREA_CHART() function
 
-2. **3D pie chart**:
-   ```
-   Create a 3D pie chart of revenue by customer segment
-   ```
+Chart function usage:
+1. Query the data from appropriate semantic view
+2. Convert results to JSON string format
+3. Call the chart function with: data_json, label_field, value_field, title
+4. Display the returned Vega-Lite spec inline
 
-3. **Bar chart with comparison**:
-   ```
-   Display distributor performance as a bar chart showing revenue by distributor
-   ```
+For "3D pie chart" requests:
+- Use GENERATE_DONUT_CHART() which creates an enhanced donut chart
+- Explain: "Here's an enhanced donut chart (the closest to 3D that displays inline)"
+- The donut style with gradient colors provides depth perception
 
-4. **Line chart for trends**:
-   ```
-   Show me monthly order trends in a line chart for the past 12 months
-   ```
-
-5. **3D scatter plot**:
-   ```
-   Create a 3D scatter plot showing product price, flash size, and RAM size
-   ```
-
-The agent should recognize the chart request, query the appropriate data using semantic views, and pass it to the Streamlit app for visualization.
+Example:
+User: "Show me design wins by product family in a 3D pie chart"
+Response: [Query data] → [Call GENERATE_DONUT_CHART()] → [Display chart inline]
+"Here's an enhanced donut chart showing design wins by product family..."
+```
 
 ---
 
