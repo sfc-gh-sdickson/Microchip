@@ -132,48 +132,52 @@ SELECT 'ML models created successfully' AS status;
 SHOW MODELS IN SCHEMA ANALYTICS;
 
 -- ============================================================================
--- Test Each Model
+-- Test Each Model (Run these AFTER models finish training - wait 3-5 minutes)
 -- ============================================================================
+
+/*
+IMPORTANT: Models need to train before you can call their methods.
+After executing this file, wait 3-5 minutes for training to complete.
+
+Then run these test statements to verify models work:
 
 -- Test 1: Revenue Forecast (predict next 3 months)
 SELECT '=== Testing REVENUE_FORECAST_MODEL ===' AS test_name;
 CALL REVENUE_FORECAST_MODEL!FORECAST(FORECASTING_PERIODS => 3);
 
--- Test 2: Design Win Anomaly Detection
--- Note: DETECT_ANOMALIES requires evaluation data AFTER training data timestamps
--- Training data ends at -2 months, so evaluation uses last 2 months
+-- Test 2: Design Win Anomaly Detection (last 2 months)
 SELECT '=== Testing DESIGN_WIN_ANOMALY_MODEL ===' AS test_name;
 CALL DESIGN_WIN_ANOMALY_MODEL!DETECT_ANOMALIES(
-  INPUT_DATA => SYSTEM$QUERY_REFERENCE('
-    SELECT
-      DATE_TRUNC(''week'', design_win_date)::TIMESTAMP_NTZ AS ts,
+  INPUT_DATA => TABLE(SELECT
+      DATE_TRUNC('week', design_win_date)::TIMESTAMP_NTZ AS ts,
       COUNT(DISTINCT design_win_id)::FLOAT AS win_count
     FROM RAW.DESIGN_WINS
-    WHERE design_win_date >= DATEADD(''month'', -2, CURRENT_DATE())
-    GROUP BY DATE_TRUNC(''week'', design_win_date)::TIMESTAMP_NTZ
-    ORDER BY ts
-  '),
+    WHERE design_win_date >= DATEADD('month', -2, CURRENT_DATE())
+    GROUP BY DATE_TRUNC('week', design_win_date)::TIMESTAMP_NTZ),
   TIMESTAMP_COLNAME => 'TS',
   TARGET_COLNAME => 'WIN_COUNT'
 );
 
--- Test 3: Customer Churn Classification (predict on training data sample)
+-- Test 3: Customer Churn Classification (predict on sample)
 SELECT '=== Testing CUSTOMER_CHURN_CLASSIFIER ===' AS test_name;
 CALL CUSTOMER_CHURN_CLASSIFIER!PREDICT(
-  INPUT_DATA => SYSTEM$QUERY_REFERENCE('SELECT * FROM V_CHURN_TRAINING_DATA LIMIT 10')
+  INPUT_DATA => TABLE(SELECT * FROM V_CHURN_TRAINING_DATA LIMIT 10)
 );
 
 -- Test 4: Revenue Top Insights
 SELECT '=== Testing REVENUE_INSIGHTS_ANALYZER ===' AS test_name;
 CALL REVENUE_INSIGHTS_ANALYZER!GET_DRIVERS(
-  INPUT_DATA => SYSTEM$REFERENCE('VIEW', 'V_INSIGHTS_ANALYSIS_DATA'),
+  INPUT_DATA => TABLE(V_INSIGHTS_ANALYSIS_DATA),
   LABEL_COLNAME => 'LABEL',
   METRIC_COLNAME => 'METRIC'
 );
+
+*/
 
 -- ============================================================================
 -- Final Status
 -- ============================================================================
 
-SELECT 'All ML models tested successfully and ready for agent integration' AS final_status;
+SELECT 'ML models created successfully - wait 3-5 minutes for training to complete' AS final_status;
+SELECT 'Then run the test statements above (uncomment them) to verify models work' AS next_step;
 
