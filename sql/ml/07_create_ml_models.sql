@@ -58,7 +58,7 @@ CREATE OR REPLACE FUNCTION FORECAST_MONTHLY_REVENUE(
     MONTHS_AHEAD INT
 )
 RETURNS TABLE (
-    forecast_month TIMESTAMP_NTZ,
+    forecast_month DATE,
     forecasted_revenue NUMBER(15,2),
     lower_bound NUMBER(15,2),
     upper_bound NUMBER(15,2)
@@ -86,7 +86,7 @@ $$
     ),
     forecast_months AS (
         SELECT
-            DATEADD('month', SEQ4(), (SELECT MAX(month) FROM historical_data)) AS forecast_month
+            DATEADD('month', SEQ4(), (SELECT MAX(month) FROM historical_data))::DATE AS forecast_month
         FROM TABLE(GENERATOR(ROWCOUNT => MONTHS_AHEAD))
     )
     SELECT
@@ -108,7 +108,7 @@ CREATE OR REPLACE FUNCTION FORECAST_DESIGN_WINS(
     MONTHS_AHEAD INT
 )
 RETURNS TABLE (
-    forecast_month TIMESTAMP_NTZ,
+    forecast_month DATE,
     product_family VARCHAR,
     forecasted_design_wins NUMBER(10,0),
     confidence_level VARCHAR
@@ -140,7 +140,7 @@ $$
     ),
     forecast_periods AS (
         SELECT
-            DATEADD('month', SEQ4(), (SELECT MAX(month) FROM historical_wins)) AS forecast_month
+            DATEADD('month', SEQ4(), (SELECT MAX(month) FROM historical_wins))::DATE AS forecast_month
         FROM TABLE(GENERATOR(ROWCOUNT => MONTHS_AHEAD))
     )
     SELECT
@@ -476,7 +476,7 @@ $$;
 
 CREATE OR REPLACE FUNCTION DETECT_SUPPORT_ANOMALIES()
 RETURNS TABLE (
-    week_start TIMESTAMP_NTZ,
+    week_start DATE,
     ticket_count NUMBER,
     expected_count NUMBER,
     deviation NUMBER,
@@ -490,7 +490,7 @@ AS
 $$
     WITH weekly_tickets AS (
         SELECT
-            DATE_TRUNC('week', created_date) AS week_start,
+            DATE_TRUNC('week', created_date)::DATE AS week_start,
             COUNT(DISTINCT ticket_id) AS ticket_count,
             LISTAGG(DISTINCT ticket_category, ', ') WITHIN GROUP (ORDER BY ticket_category) AS issue_types
         FROM RAW.SUPPORT_TICKETS
