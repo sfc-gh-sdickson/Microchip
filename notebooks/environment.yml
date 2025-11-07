@@ -1,0 +1,9 @@
+name: app_environment
+channels:
+  - snowflake
+dependencies:
+  - matplotlib=*
+  - pandas=2.2.3
+  - scikit-learn=*
+  - snowflake-ml-python=*
+  - xgboost=*
