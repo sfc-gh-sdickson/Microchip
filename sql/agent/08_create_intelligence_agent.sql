@@ -29,6 +29,42 @@ instructions:
   response: 'You are a Microchip semiconductor analytics assistant. For metrics and KPIs, use Cortex Analyst semantic views. For unstructured content, use Cortex Search. For predictions, use ML procedures. Keep answers concise and data-driven.'
   orchestration: 'Prefer semantic views for structured analytics; use search services for unstructured answers; call ML procedures for forecasting/classification.'
   system: 'Analyze Microchip customers, sales, product performance, support, and quality data.'
+  sample_questions:
+    # Simple (5)
+    - question: 'How many customers do we have?'
+      answer: 'I will query the customer dimension in the semantic model to count total customers.'
+    - question: 'What was total revenue last month?'
+      answer: 'I will use the Sales Revenue Intelligence semantic view filtered to last month.'
+    - question: 'Show orders by product family for the last 30 days.'
+      answer: 'I will group orders by product family in the Sales Revenue Intelligence view.'
+    - question: 'How many open support tickets do we have right now?'
+      answer: 'I will count open tickets in the Customer Support Intelligence view.'
+    - question: 'List the top 5 customers by lifetime value.'
+      answer: 'I will rank customers by lifetime value using the semantic model.'
+
+    # Complex (5)
+    - question: 'Break down quarterly revenue by product family year-to-date and compare vs last year.'
+      answer: 'I will aggregate revenue by quarter and product family and compute year-over-year deltas.'
+    - question: 'Which product families have the highest support ticket rates per 1,000 orders over the last 90 days?'
+      answer: 'I will join orders and support metrics in the semantic layer and normalize by order volume.'
+    - question: 'What is our design win conversion rate to production by product family in the last 12 months?'
+      answer: 'I will calculate conversion rates using design wins and production orders in the semantic model.'
+    - question: 'Analyze correlation between quality issues and customer churn indicators.'
+      answer: 'I will analyze quality issues alongside support and order activity to identify churn signals.'
+    - question: 'Which customers drive the top 20% of revenue and what are their common attributes?'
+      answer: 'I will compute revenue contribution and summarize common segments/industries for top contributors.'
+
+    # ML-driven (5)
+    - question: 'Forecast total revenue for the next 6 months.'
+      answer: 'I will call the PredictRevenue procedure and present the forecast by month.'
+    - question: 'Which customers are most likely to churn next quarter? Show top 10.'
+      answer: 'I will call the PredictCustomerChurn procedure and return customers with highest risk scores.'
+    - question: 'Which design wins have a high probability to convert to production?'
+      answer: 'I will call the PredictDesignWinConversion procedure and rank designs by predicted conversion.'
+    - question: 'Forecast revenue specifically for the Microcontrollers product family.'
+      answer: 'I will filter inputs and call the revenue prediction to estimate by product family.'
+    - question: 'Identify churn risk for Distributor customers and summarize drivers.'
+      answer: 'I will run churn predictions for the Distributor segment and summarize key contributing features.'
 
 tools:
   - tool_spec:

@@ -19,6 +19,39 @@ models:
 instructions:
   response: 'Use semantic views, search services, and ML procedures in the MB environment.'
   system: 'MB environment agent for Microchip analytics.'
+  sample_questions:
+    - question: 'How many customers do we have?'
+      answer: 'I will query the customer dimension to count total customers.'
+    - question: 'What was total revenue last month?'
+      answer: 'I will use the Sales Revenue Intelligence view filtered to last month.'
+    - question: 'Show orders by product family for the last 30 days.'
+      answer: 'I will group orders by product family in the semantic view.'
+    - question: 'How many open support tickets do we have right now?'
+      answer: 'I will count open tickets in the Customer Support Intelligence view.'
+    - question: 'List the top 5 customers by lifetime value.'
+      answer: 'I will rank customers by lifetime value from the semantic model.'
+
+    - question: 'Break down quarterly revenue by product family YTD and compare vs last year.'
+      answer: 'I will aggregate revenue by quarter and compute year-over-year changes.'
+    - question: 'Which product families have the highest ticket rates per 1,000 orders over 90 days?'
+      answer: 'I will normalize support tickets by order volume by product family.'
+    - question: 'What is design win conversion to production by product family in the last 12 months?'
+      answer: 'I will compute conversion using design wins and production orders.'
+    - question: 'Analyze correlation between quality issues and churn indicators.'
+      answer: 'I will analyze quality issues with support and order activity for churn signals.'
+    - question: 'Which customers contribute the top 20% of revenue and what are their attributes?'
+      answer: 'I will identify top contributors and summarize common segments/industries.'
+
+    - question: 'Forecast total revenue for the next 6 months.'
+      answer: 'I will call the PredictRevenueMB procedure and present monthly forecasts.'
+    - question: 'Which customers are most likely to churn next quarter? Show top 10.'
+      answer: 'I will call PredictCustomerChurnMB and return customers with highest risk.'
+    - question: 'Which design wins have high probability to convert?'
+      answer: 'I will call PredictDesignWinConversionMB and rank designs by probability.'
+    - question: 'Forecast revenue for the Microcontrollers family.'
+      answer: 'I will filter inputs and run the revenue forecast by family.'
+    - question: 'Identify churn risk for Distributor customers and summarize drivers.'
+      answer: 'I will run churn predictions for Distributors and summarize key drivers.'
 
 tools:
   - tool_spec:
