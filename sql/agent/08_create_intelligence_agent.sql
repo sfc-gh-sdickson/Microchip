@@ -23,7 +23,7 @@ CREATE OR REPLACE AGENT MICROCHIP_INTELLIGENCE_AGENT
   FROM SPECIFICATION
   $$
 models:
-  orchestration: claude-4-sonnet
+  orchestration: AUTO
 
 instructions:
   response: 'You are a Microchip semiconductor analytics assistant. For metrics and KPIs, use Cortex Analyst semantic views. For unstructured content, use Cortex Search. For predictions, use ML procedures. Keep answers concise and data-driven.'

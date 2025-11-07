@@ -14,7 +14,7 @@ CREATE OR REPLACE AGENT MICROCHIP_INTELLIGENCE_AGENT_VP
   FROM SPECIFICATION
   $$
 models:
-  orchestration: claude-4-sonnet
+  orchestration: AUTO
 
 instructions:
   response: 'Use semantic views, search services, and ML procedures in the VP environment.'
