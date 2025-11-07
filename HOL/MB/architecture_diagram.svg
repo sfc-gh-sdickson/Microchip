@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Gradient Definitions -->
+  <defs>
+    <linearGradient id="agentGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#29B5E8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1E88C7;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="analystGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#56C596;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3EA876;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="searchGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF9F40;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E88330;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="dataGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#9D7EC0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#7D5FA0;stop-opacity:1" />
+    </linearGradient>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666"/>
+    </marker>
+  </defs>
+  
+  <!-- Title -->
+  <text x="400" y="30" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#333">
+    Microchip Intelligence Agent Architecture
+  </text>
+  
+  <!-- Agent Container -->
+  <rect x="50" y="60" width="700" height="280" rx="10" fill="url(#agentGrad)" stroke="#1E88C7" stroke-width="3" opacity="0.95"/>
+  <text x="400" y="90" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">
+    Snowflake Intelligence Agent
+  </text>
+  
+  <!-- Cortex Analyst Box -->
+  <rect x="70" y="110" width="320" height="210" rx="8" fill="url(#analystGrad)" stroke="#3EA876" stroke-width="2"/>
+  <text x="230" y="135" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+    Cortex Analyst (Semantic Views)
+  </text>
+  <text x="80" y="160" font-family="Arial, sans-serif" font-size="11" fill="white">
+    • SV_DESIGN_ENGINEERING_INTELLIGENCE
+  </text>
+  <text x="100" y="177" font-family="Arial, sans-serif" font-size="10" fill="#E8F5E9">
+    Design wins, products, engineers
+  </text>
+  <text x="80" y="200" font-family="Arial, sans-serif" font-size="11" fill="white">
+    • SV_SALES_REVENUE_INTELLIGENCE
+  </text>
+  <text x="100" y="217" font-family="Arial, sans-serif" font-size="10" fill="#E8F5E9">
+    Orders, revenue, distributors
+  </text>
+  <text x="80" y="240" font-family="Arial, sans-serif" font-size="11" fill="white">
+    • SV_CUSTOMER_SUPPORT_INTELLIGENCE
+  </text>
+  <text x="100" y="257" font-family="Arial, sans-serif" font-size="10" fill="#E8F5E9">
+    Tickets, satisfaction, engineers
+  </text>
+  <circle cx="230" cy="300" r="6" fill="#4CAF50"/>
+  <text x="240" y="305" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">
+    Structured Data
+  </text>
+  
+  <!-- Cortex Search Box -->
+  <rect x="410" y="110" width="320" height="210" rx="8" fill="url(#searchGrad)" stroke="#E88330" stroke-width="2"/>
+  <text x="570" y="135" font-family="Arial, sans-serif" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+    Cortex Search (Unstructured)
+  </text>
+  <text x="420" y="160" font-family="Arial, sans-serif" font-size="11" fill="white">
+    • SUPPORT_TRANSCRIPTS_SEARCH
+  </text>
+  <text x="440" y="177" font-family="Arial, sans-serif" font-size="10" fill="#FFF3E0">
+    25K technical support interactions
+  </text>
+  <text x="420" y="200" font-family="Arial, sans-serif" font-size="11" fill="white">
+    • APPLICATION_NOTES_SEARCH
+  </text>
+  <text x="440" y="217" font-family="Arial, sans-serif" font-size="10" fill="#FFF3E0">
+    Technical design guides
+  </text>
+  <text x="420" y="240" font-family="Arial, sans-serif" font-size="11" fill="white">
+    • QUALITY_INVESTIGATION_REPORTS_SEARCH
+  </text>
+  <text x="440" y="257" font-family="Arial, sans-serif" font-size="10" fill="#FFF3E0">
+    15K quality investigations
+  </text>
+  <circle cx="570" cy="300" r="6" fill="#FF9800"/>
+  <text x="580" y="305" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">
+    Semantic Search
+  </text>
+  
+  <!-- Arrows -->
+  <path d="M 230 340 L 230 380" stroke="#666" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  <path d="M 570 340 L 570 380" stroke="#666" stroke-width="3" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Data Layer -->
+  <rect x="50" y="390" width="700" height="180" rx="10" fill="url(#dataGrad)" stroke="#7D5FA0" stroke-width="3" opacity="0.95"/>
+  <text x="400" y="420" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="white">
+    RAW Schema (Source Data)
+  </text>
+  
+  <!-- Data - Left Column -->
+  <text x="70" y="450" font-family="Arial, sans-serif" font-size="11" fill="white">
+    📊 Structured Tables:
+  </text>
+  <text x="80" y="470" font-family="Arial, sans-serif" font-size="10" fill="#E1BEE7">
+    • 25K Customers (OEMs, manufacturers)
+  </text>
+  <text x="80" y="487" font-family="Arial, sans-serif" font-size="10" fill="#E1BEE7">
+    • 250K Design Engineers
+  </text>
+  <text x="80" y="504" font-family="Arial, sans-serif" font-size="10" fill="#E1BEE7">
+    • 30 Products (PIC, AVR, SAM, FPGA...)
+  </text>
+  <text x="80" y="521" font-family="Arial, sans-serif" font-size="10" fill="#E1BEE7">
+    • 500K Design Wins
+  </text>
+  <text x="80" y="538" font-family="Arial, sans-serif" font-size="10" fill="#E1BEE7">
+    • 1M Orders, 75K Support Tickets
+  </text>
+  
+  <!-- Data - Right Column -->
+  <text x="420" y="450" font-family="Arial, sans-serif" font-size="11" fill="white">
+    📄 Unstructured Documents:
+  </text>
+  <text x="430" y="470" font-family="Arial, sans-serif" font-size="10" fill="#E1BEE7">
+    • 25K Support Transcripts
+  </text>
+  <text x="430" y="487" font-family="Arial, sans-serif" font-size="10" fill="#E1BEE7">
+    • 3 Application Notes
+  </text>
+  <text x="430" y="504" font-family="Arial, sans-serif" font-size="10" fill="#E1BEE7">
+    • 15K Quality Investigation Reports
+  </text>
+  <text x="430" y="530" font-family="Arial, sans-serif" font-size="10" fill="white" font-weight="bold">
+    Total: ~2.5M records + 40K documents
+  </text>
+  
+  <!-- Footer Badge -->
+  <rect x="280" y="575" width="240" height="20" rx="4" fill="#4CAF50"/>
+  <text x="400" y="589" font-family="Arial, sans-serif" font-size="11" font-weight="bold" text-anchor="middle" fill="white">
+    ✓ 100% Snowflake-Native Solution
+  </text>
+</svg>
+
