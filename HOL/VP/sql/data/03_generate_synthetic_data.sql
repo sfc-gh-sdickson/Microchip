@@ -143,7 +143,7 @@ FROM TABLE(GENERATOR(ROWCOUNT => 25000));
 -- ============================================================================
 -- Step 5: Generate Design Engineers
 -- ============================================================================
-INSERT INTO DESIGN_ENGINEERS
+INSERT INTO DESIGN_ENGINEERS_VP
 SELECT
     'ENG' || LPAD(SEQ4(), 10, '0') AS engineer_id,
     c.customer_id,
@@ -164,7 +164,7 @@ SELECT
     CASE WHEN UNIFORM(0, 100, RANDOM()) < 70 THEN DATEADD('day', -1 * UNIFORM(0, 365, RANDOM()), CURRENT_DATE()) ELSE NULL END AS last_webinar_attended_date,
     DATEADD('day', -1 * UNIFORM(30, 3650, RANDOM()), CURRENT_TIMESTAMP()) AS created_at,
     CURRENT_TIMESTAMP() AS updated_at
-FROM CUSTOMERS c
+FROM CUSTOMERS_VP c
 CROSS JOIN TABLE(GENERATOR(ROWCOUNT => 10))
 WHERE UNIFORM(0, 100, RANDOM()) < 100
 LIMIT 250000;
